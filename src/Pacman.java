@@ -21,7 +21,7 @@ public class Pacman {
         if (this.levelChoice == 1){
             this.grid = new int[27][28];
             try {
-                FileReader reader = new FileReader("C://Users/Andrea/Desktop/programmazione/ProgettoFinale/livello1.txt");
+                FileReader reader = new FileReader("C://Users/Andrea/Desktop/programmazione/ProgettoFinale../livello1.txt");
                 int character;
                 do {
                     character = reader.read();
@@ -41,7 +41,7 @@ public class Pacman {
     public String toString (){
         String result= "";
         for (int i = 0; i < this.grid.length; i ++){
-            result += "|";
+            result += "|" + i;
             for (int j = 0; j <this.grid[i].length; j ++){
                 if (this.grid [i][j] == 1){
                     result += "[" + "\u001B[33m\uD83D\uDEA7\u001B[0m" + "]";
