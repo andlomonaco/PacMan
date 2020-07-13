@@ -21,7 +21,7 @@ public class Pacman {
         if (this.levelChoice == 1){
             this.grid = new int[27][28];
             try {
-                FileReader reader = new FileReader("C://Users/Andrea/Desktop/programmazione/ProgettoFinale../livello1.txt");
+                FileReader reader = new FileReader("livello1.txt");
                 int character;
                 do {
                     character = reader.read();
