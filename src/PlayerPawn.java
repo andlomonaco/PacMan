@@ -1,4 +1,4 @@
-public class PlayerPawn extends Thread {
+public class PlayerPawn{
     private int x;
     private int y;
 

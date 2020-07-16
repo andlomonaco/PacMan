@@ -4,17 +4,21 @@ import java.io.FileReader;
 
 public class Pacman {
     private int [][] grid;
-    private int score;
+    private int score = 0;
     enum Status  {IN_GAME, LOSE, WIN};
-    Status status = Status.IN_GAME;
+    private Status status = Status.IN_GAME;
     private int levelChoice;
     PlayerPawn playerPawn;
+    private String lastMove = "d";
 
     public Pacman (int levelChoice){
         this.levelChoice = levelChoice;
-        this.initializeLevel();
+        this.loadLevel();
         this.initializePawn();
         this.setPlayerPosition();
+    }
+    public Pacman (){
+        this.loadLevel();
     }
 
     private void initializePawn() {
@@ -26,12 +30,82 @@ public class Pacman {
     private void setPlayerPosition (){
         this.grid [playerPawn.getX()][playerPawn.getY()] = 5;
     }
+    /*
+    *** VALORI***
+    Muro = 1
+    Spazio vuoto = 2
+    pacman = 5
+    cibo = 0
+    nemici = 3
 
-    public Pacman (){
-        this.initializeLevel();
+     */
+
+    public void move (String direction){
+        if (direction.equalsIgnoreCase("d")){
+            if (this.grid [playerPawn.getX()] [playerPawn.getY() + 1] == 3){
+                this.status = Status.LOSE;
+            }
+            if (this.grid [playerPawn.getX()] [playerPawn.getY() + 1] != 1){
+                if (this.grid [playerPawn.getX()] [playerPawn.getY() + 1] == 0){
+                    this.score += 10;
+                }
+                this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
+                this.playerPawn.setY(this.playerPawn.getY() + 1);
+                this.setPlayerPosition();
+            }
+        }
+
+
+
+        if (direction.equalsIgnoreCase("a")){
+            if (this.grid [playerPawn.getX()] [playerPawn.getY() - 1] == 3){
+                this.status = Status.LOSE;
+            }
+            if (this.grid [playerPawn.getX()] [playerPawn.getY() - 1] != 1){
+                if (this.grid [playerPawn.getX()] [playerPawn.getY() - 1] == 0){
+                    this.score += 10;
+                }
+                this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
+                this.playerPawn.setY(this.playerPawn.getY() - 1);
+                this.setPlayerPosition();
+            }
+        }
+
+        if (direction.equalsIgnoreCase("s")){
+            if (this.grid [playerPawn.getX() + 1] [playerPawn.getY()] == 3){
+                this.status = Status.LOSE;
+            }
+            if (this.grid [playerPawn.getX() + 1] [playerPawn.getY()] != 1){
+                if (this.grid [playerPawn.getX() + 1] [playerPawn.getY()] == 0){
+                    this.score += 10;
+                }
+                this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
+                this.playerPawn.setX(this.playerPawn.getX() + 1);
+                this.setPlayerPosition();
+            }
+        }
+
+        if (direction.equalsIgnoreCase("w")){
+            if (this.grid [playerPawn.getX() - 1] [playerPawn.getY()] == 3){
+                this.status = Status.LOSE;
+            }
+            if (this.grid [playerPawn.getX() - 1] [playerPawn.getY()] != 1){
+                if (this.grid [playerPawn.getX() - 1] [playerPawn.getY()] == 0){
+                    this.score += 10;
+                }
+                this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
+                this.playerPawn.setX(this.playerPawn.getX() - 1);
+                this.setPlayerPosition();
+            }
+        }
+        this.lastMove = direction;
     }
 
-    public void initializeLevel(){
+    public String getLastMove() {
+        return lastMove;
+    }
+
+    public void loadLevel(){
         if (this.levelChoice == 1){
             this.grid = new int[27][28];
             try {
@@ -52,6 +126,7 @@ public class Pacman {
             }
         }
     }
+
     public String toString (){
         String result= "";
         for (int i = 0; i < this.grid.length; i ++){
