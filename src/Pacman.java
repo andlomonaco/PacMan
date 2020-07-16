@@ -8,11 +8,25 @@ public class Pacman {
     enum Status  {IN_GAME, LOSE, WIN};
     Status status = Status.IN_GAME;
     private int levelChoice;
+    PlayerPawn playerPawn;
 
     public Pacman (int levelChoice){
         this.levelChoice = levelChoice;
         this.initializeLevel();
+        this.initializePawn();
+        this.setPlayerPosition();
     }
+
+    private void initializePawn() {
+        if (this.levelChoice == 1){
+            this.playerPawn = new PlayerPawn(13, 0);
+        }
+    }
+
+    private void setPlayerPosition (){
+        this.grid [playerPawn.getX()][playerPawn.getY()] = 5;
+    }
+
     public Pacman (){
         this.initializeLevel();
     }
