@@ -1,8 +1,8 @@
-public class PlayerPawn{
+public class Pawn{
     private int x;
     private int y;
 
-    public PlayerPawn (int x, int y){
+    public Pawn (int x, int y){
         this.x = x;
         this.y = y;
     }
