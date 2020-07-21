@@ -8,7 +8,7 @@ public class Main {
         while (p.getStatus() == Pacman.Status.IN_GAME){
             Scanner in = new Scanner(System.in);
             String direction = in.nextLine();
-            p.move(direction, p.getPlayerPawn());
+            p.setCurrentMove(direction);
         }
 
         if (p.getStatus() == Pacman.Status.LOSE){

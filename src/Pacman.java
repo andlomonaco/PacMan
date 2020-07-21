@@ -18,6 +18,7 @@ public class Pacman extends Thread {
     private int [][] grid;
     private int xSize;
     private int ySize;
+    private String currentMove = "d";
     private int score = 0;
     enum Status  {IN_GAME, LOSE, WIN};
     private Status status = Status.IN_GAME;
@@ -28,7 +29,7 @@ public class Pacman extends Thread {
     private Pawn enemyPawn3;
     private Pawn enemyPawn4;
     private ArrayList<Pawn> enemyList = new ArrayList<>();
-    private String lastMove = "d";
+
 
 
     public Pacman (int levelChoice){
@@ -72,19 +73,98 @@ public class Pacman extends Thread {
         this.grid[enemyPawn4.getX()][enemyPawn4.getY()] =  3;
     }
 
+    public void setCurrentMove (String move){
+        this.currentMove = move;
+    }
+
     private void enemyMove (){
-        String movement ="";
-        for (Pawn p: this.enemyList) {
-            double choice = Math.random();
-            if (choice < 0.25){
-                movement += "d";
-            } else if (choice < 50){
-                movement += "a";
-            } else if (choice < 75){
-                movement +="s";
-            } else  movement += "w";
-            this.move(movement, p);
+
+        for (Pawn p: enemyList) {
+            double value = Math.random();
+            if (value < 0.25){
+                //"d"
+                if (this.grid[p.getX()][p.getY()] != 1 && this.grid[p.getX()][p.getY()] != 3){
+                    int temporary = this.grid [p.getX()][p.getY() + 1];
+                    this.grid [p.getX()][p.getY() + 1] = 3;
+                    this.grid [p.getX()] [p.getY()] = temporary;
+                    p.setY(p.getY() + 1);
+                }
+            }
         }
+
+
+
+
+        /*
+
+        for (Pawn p: this.enemyList) {
+            double value = Math.random();
+            if (value < 0.25){
+                //destra
+                if (this.grid [p.getX()][p.getY() + 1] == 3){
+                    return;
+                }
+                if (this.grid [p.getX()][p.getY() + 1] == 5){
+                    this.status = Status.LOSE;
+                }
+                if (this.grid [p.getX()][p.getY() + 1] != 1){
+                    int temporary = this.grid [p.getX()][p.getY() + 1];
+                    this.grid[p.getX()][p.getY() + 1] = 3;
+                    this.grid[p.getX()][p.getY()] = temporary;
+                    p.setY(p.getY() + 1);
+                }
+
+
+            } else
+                if (value < 0.50){
+                   // sopra
+                    if (this.grid[p.getX() - 1][p.getY()] == 3){
+                        return;
+                    }
+                    if (this.grid[p.getX() - 1][p.getY()] == 5){
+                        this.status = Status.LOSE;
+                    }
+                    if (this.grid[p.getX() - 1][p.getY()] != 1){
+                        int temporary = this.grid[p.getX() - 1][p.getY()];
+                        this.grid[p.getX() - 1][p.getY()] = 3;
+                        this.grid[p.getX()][p.getY()] = temporary;
+                        p.setX(p.getX() - 1);
+                    }
+
+                } else
+                    if (value < 0.75){
+                        // giù
+                        if (this.grid [p.getX() + 1][p.getY()] == 3){
+                            return;
+                        }
+                        if (this.grid [p.getX() + 1][p.getY()] == 5){
+                            this.status = Status.LOSE;
+                        }
+                        if (this.grid [p.getX() + 1][p.getY()] != 1){
+                            int temporary = this.grid [p.getX() + 1][p.getY()];
+                            this.grid [p.getX() + 1][p.getY()] = 3;
+                            this.grid[p.getX()][p.getY()] = temporary;
+                            p.setX(p.getX() + 1);
+                        }
+                        //sinistra
+                    } else
+                        if (this.grid[p.getX()] [p.getY() - 1] == 3){
+                            return;
+                        }
+                        if (this.grid[p.getX()] [p.getY() - 1] == 5){
+                            this.status = Status.LOSE;
+                        }
+                        if (this.grid[p.getX()] [p.getY() - 1] != 1){
+                            int temporary = this.grid[p.getX()] [p.getY() - 1];
+                            this.grid[p.getX()] [p.getY() - 1] = 3;
+                            this.grid[p.getX()][p.getY()] = temporary;
+                            p.setY(p.getY() - 1);
+                    }
+            this.setEnemyPosition();
+
+        }
+
+         */
     }
 
     @Override
@@ -92,20 +172,20 @@ public class Pacman extends Thread {
         while ( status == Status.IN_GAME){
             try {
                 Thread.sleep(1000);
-                move(lastMove, this.playerPawn);
+                move();
+                this.enemyMove();
                 System.out.println(this.toString());
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void move (String direction, Pawn playerPawn){
-        this.lastMove = direction;
+    public void move (){
 
 
-        if (direction.equalsIgnoreCase("d")){
+
+        if (this.currentMove.equalsIgnoreCase("d")){
             if (this.playerPawn.getY() + 1 >= this.ySize){
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
                 this.playerPawn.setY(0);
@@ -125,7 +205,7 @@ public class Pacman extends Thread {
 
 
 
-        if (direction.equalsIgnoreCase("a")){
+        if (this.currentMove.equalsIgnoreCase("a")){
             if (this.playerPawn.getY() - 1 < 0){
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
                 this.playerPawn.setY(this.ySize-1);
@@ -147,7 +227,7 @@ public class Pacman extends Thread {
             }
         }
 
-        if (direction.equalsIgnoreCase("s")){
+        if (this.currentMove.equalsIgnoreCase("s")){
             if (this.playerPawn.getX() + 1 >= this.xSize){
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
                 this.playerPawn.setX(0);
@@ -165,7 +245,7 @@ public class Pacman extends Thread {
             }
         }
 
-        if (direction.equalsIgnoreCase("w")){
+        if (this.currentMove.equalsIgnoreCase("w")){
             if (this.playerPawn.getX() - 1 < 0){
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
                 this.playerPawn.setX(this.xSize - 1);
@@ -189,9 +269,7 @@ public class Pacman extends Thread {
         return status;
     }
 
-    public String getLastMove() {
-        return lastMove;
-    }
+
 
     public void loadLevel(){
         if (this.levelChoice == 1){
@@ -243,7 +321,4 @@ public class Pacman extends Thread {
 
     }
 
-    public Pawn getPlayerPawn() {
-        return playerPawn;
-    }
 }
