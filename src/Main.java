@@ -2,13 +2,14 @@ import java.util.Scanner;
 
 public class Main {
     public static void main (String args[]){
-        Pacman p = new Pacman(1);
+        Pacman p = new Pacman(2);
 
         p.start();
         while (p.getStatus() == Pacman.Status.IN_GAME){
             Scanner in = new Scanner(System.in);
             String direction = in.nextLine();
             p.setCurrentMove(direction);
+
         }
 
         if (p.getStatus() == Pacman.Status.LOSE){

@@ -1,18 +1,18 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
+        import java.io.FileNotFoundException;
+        import java.io.FileReader;
+        import java.util.ArrayList;
+import java.util.LinkedList;
 
 /*
     *** VALORI***
     Muro = 1
-    Spazio vuoto = 2
-    pacman = 5
-    cibo = 0
+    Spazio vuoto = 2 v
+    pacman = 5 v
+    cibo = 0 v
     nemici = 3
 
      */
-
 
 public class Pacman extends Thread {
     private int [][] grid;
@@ -22,29 +22,46 @@ public class Pacman extends Thread {
     private int score = 0;
     enum Status  {IN_GAME, LOSE, WIN};
     private Status status = Status.IN_GAME;
+    int foodCounter;
     private int levelChoice;
     private Pawn playerPawn;
     private Pawn enemyPawn1;
     private Pawn enemyPawn2;
     private Pawn enemyPawn3;
     private Pawn enemyPawn4;
+    int lastEnemy1Position = 0;
+    int lastEnemy2Position = 0;
+    int lastEnemy3Position = 0;
+    int lastEnemy4Position = 0;
     private ArrayList<Pawn> enemyList = new ArrayList<>();
+    private LinkedList<Integer> lastEnemyPositionList = new LinkedList<>();
 
 
 
     public Pacman (int levelChoice){
         this.levelChoice = levelChoice;
         this.loadLevel();
+        this.checkFoodCounter();
         this.initializePawn();
         this.setPlayerPosition();
         this.initializeEnemy();
         this.setEnemyPosition();
+        this.initializeLastPosition();
     }
 
+    private void initializeLastPosition(){
+        lastEnemyPositionList.add(lastEnemy1Position);
+        lastEnemyPositionList.add(lastEnemy2Position);
+        lastEnemyPositionList.add(lastEnemy3Position);
+        lastEnemyPositionList.add(lastEnemy4Position);
+    }
 
     private void initializePawn() {
         if (this.levelChoice == 1){
             this.playerPawn = new Pawn(13, 0);
+        }
+        if (this.levelChoice == 2){
+            this.playerPawn = new Pawn (8,1);
         }
     }
 
@@ -55,15 +72,22 @@ public class Pacman extends Thread {
 
     private void initializeEnemy (){
         if (this.levelChoice == 1){
-            this.enemyPawn1 = new Pawn(13,11);
+            this.enemyPawn1 = new Pawn(5,11);
             this.enemyPawn2 = new Pawn(13,16);
             this.enemyPawn3 = new Pawn(21,6);
             this.enemyPawn4 = new Pawn(21,21);
+        }
+        if (this.levelChoice == 2){
+            this.enemyPawn1 = new Pawn(7,7);
+            this.enemyPawn2 = new Pawn(7,9);
+            this.enemyPawn3 = new Pawn(3,7);
+            this.enemyPawn4 = new Pawn(13,10);
         }
         enemyList.add(this.enemyPawn1);
         enemyList.add(this.enemyPawn2);
         enemyList.add(this.enemyPawn3);
         enemyList.add(this.enemyPawn4);
+
     }
 
     private void setEnemyPosition (){
@@ -77,25 +101,38 @@ public class Pacman extends Thread {
         this.currentMove = move;
     }
 
+
+
     private void enemyMove (){
 
-        for (Pawn p: enemyList) {
+        for (int i = 0; i < this.enemyList.size(); i ++){
             double value = Math.random();
-            if (value < 0.25){
-                //"d"
-                if (this.grid[p.getX()][p.getY()] != 1 && this.grid[p.getX()][p.getY()] != 3){
-                    int temporary = this.grid [p.getX()][p.getY() + 1];
-                    this.grid [p.getX()][p.getY() + 1] = 3;
-                    this.grid [p.getX()] [p.getY()] = temporary;
-                    p.setY(p.getY() + 1);
+
+            //destra
+            if (value < 0.25) {
+                if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 5){
+                    this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] =  this.lastEnemy1Position;
+                    this.enemyList.get(i).setY(this.enemyList.get(i).getY() + 1);
+                    this.status = Status.LOSE;
+                }
+                if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 2 || this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 0){
+                    this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
+                    this.lastEnemyPositionList.add(i,  this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY() + 1]);
+                    this.enemyList.get(i).setY(this.enemyList.get(i).getY() + 1);
                 }
             }
+
+
+
+            this.setEnemyPosition();
         }
 
 
 
 
+
         /*
+
 
         for (Pawn p: this.enemyList) {
             double value = Math.random();
@@ -165,6 +202,10 @@ public class Pacman extends Thread {
         }
 
          */
+
+
+
+
     }
 
     @Override
@@ -175,26 +216,46 @@ public class Pacman extends Thread {
                 move();
                 this.enemyMove();
                 System.out.println(this.toString());
+                System.out.println(this.getScore());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    public int getScore (){
+        return this.score;
+    }
+
+    public void checkFoodCounter (){
+        int count= 0;
+        for (int i = 0; i < this.grid.length; i++){
+            for (int j = 0; j < this.grid[i].length; j ++){
+                if (this.grid[i][j] == 0){
+                    count ++;
+                }
+            }
+        }
+        this.foodCounter = count;
+    }
+
+
+
+
     public void move (){
-
-
-
         if (this.currentMove.equalsIgnoreCase("d")){
+
             if (this.playerPawn.getY() + 1 >= this.ySize){
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
                 this.playerPawn.setY(0);
             }
+            //se incontra un nemico
             if (this.grid [playerPawn.getX()] [playerPawn.getY() + 1] == 3){
                 this.status = Status.LOSE;
             }
             if (this.grid [playerPawn.getX()] [playerPawn.getY() + 1] != 1){
                 if (this.grid [playerPawn.getX()] [playerPawn.getY() + 1] == 0){
+                    this.foodCounter --;
                     this.score += 10;
                 }
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
@@ -202,8 +263,6 @@ public class Pacman extends Thread {
                 this.setPlayerPosition();
             }
         }
-
-
 
         if (this.currentMove.equalsIgnoreCase("a")){
             if (this.playerPawn.getY() - 1 < 0){
@@ -219,6 +278,7 @@ public class Pacman extends Thread {
             }
             if (this.grid [playerPawn.getX()] [playerPawn.getY() - 1] != 1){
                 if (this.grid [playerPawn.getX()] [playerPawn.getY() - 1] == 0){
+                    this.foodCounter --;
                     this.score += 10;
                 }
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
@@ -237,6 +297,7 @@ public class Pacman extends Thread {
             }
             if (this.grid [playerPawn.getX() + 1] [playerPawn.getY()] != 1){
                 if (this.grid [playerPawn.getX() + 1] [playerPawn.getY()] == 0){
+                    this.foodCounter --;
                     this.score += 10;
                 }
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
@@ -255,6 +316,7 @@ public class Pacman extends Thread {
             }
             if (this.grid [playerPawn.getX() - 1] [playerPawn.getY()] != 1){
                 if (this.grid [playerPawn.getX() - 1] [playerPawn.getY()] == 0){
+                    this.foodCounter --;
                     this.score += 10;
                 }
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
@@ -262,36 +324,52 @@ public class Pacman extends Thread {
                 this.setPlayerPosition();
             }
         }
+        if (this.isWin()){
+            this.status = Status.WIN;
+        }
 
+    }
+
+    public boolean isWin (){
+        if (this.foodCounter == 0){
+            return true;
+        }
+        return false;
     }
 
     public Status getStatus() {
         return status;
     }
 
-
-
     public void loadLevel(){
+        String path = "livello";
         if (this.levelChoice == 1){
             this.grid = new int[27][28];
             this.xSize = 27;
             this.ySize = 28;
-            try {
-                FileReader reader = new FileReader("livello1.txt");
-                int character;
-                do {
-                    character = reader.read();
-                    for (int i = 0; i < this.grid.length ; i ++){
-                        for (int j = 0; j < this.grid[i].length  ; j++) {
-                            this.grid [i][j] = character - 48;
-                            character = reader.read();
-                        }
+            path += "1.txt";
+        }
+        if (this.levelChoice == 2){
+            this.grid = new int[17][18];
+            this.xSize = 17;
+            this.ySize = 18;
+            path += "2.txt";
+        }
+        try {
+            FileReader reader = new FileReader(path);
+            int character;
+            do {
+                character = reader.read();
+                for (int i = 0; i < this.grid.length ; i ++){
+                    for (int j = 0; j < this.grid[i].length  ; j++) {
+                        this.grid [i][j] = character - 48;
+                        character = reader.read();
                     }
-                } while (character != -1);
+                }
+            } while (character != -1);
 
-            }  catch (Exception e) {
-                e.printStackTrace();
-            }
+        }  catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,6 +1,7 @@
 public class Pawn{
     private int x;
     private int y;
+    private boolean isEnemy = false;
 
     public Pawn (int x, int y){
         this.x = x;
@@ -23,5 +24,11 @@ public class Pawn{
         this.y = y;
     }
 
+    public boolean isEnemy() {
+        return isEnemy;
+    }
 
+    public void setNotEnemy (){
+        isEnemy = false;
+    }
 }
