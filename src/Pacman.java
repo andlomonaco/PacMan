@@ -107,105 +107,106 @@ public class Pacman extends Thread {
 
         for (int i = 0; i < this.enemyList.size(); i ++){
             double value = Math.random();
+            System.out.println(value);
 
             //destra
             if (value < 0.25) {
-                if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 5){
+                //Se va fuori
+                if(this.enemyList.get(i).getY() + 1 >= this.ySize){
+                    this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
+                    this.lastEnemyPositionList.add(i,  this.grid [this.enemyList.get(i).getX()][0]);
+                    this.enemyList.get(i).setY(0);
+                }
+
+                else if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 5){
                     this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] =  this.lastEnemy1Position;
                     this.enemyList.get(i).setY(this.enemyList.get(i).getY() + 1);
                     this.status = Status.LOSE;
                 }
-                if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 2 || this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 0){
+                else if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 2 || this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 0){
                     this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
                     this.lastEnemyPositionList.add(i,  this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY() + 1]);
                     this.enemyList.get(i).setY(this.enemyList.get(i).getY() + 1);
                 }
+                else if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 3 || this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 1){
+                    continue;
+                }
+            }
+
+            //sinistra
+            else if (value < 0.50){
+                //Se va fuori
+                if(this.enemyList.get(i).getY() - 1 < 0){
+                    this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
+                    this.lastEnemyPositionList.add(i,  this.grid [this.enemyList.get(i).getX()][this.ySize - 1]);
+                    this.enemyList.get(i).setY(this.ySize - 1);
+                }
+                else if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() - 1] == 5){
+                    this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] =  this.lastEnemy1Position;
+                    this.enemyList.get(i).setY(this.enemyList.get(i).getY() - 1);
+                    this.status = Status.LOSE;
+                }
+                else if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() - 1] == 2 || this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() - 1] == 0){
+                    this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
+                    this.lastEnemyPositionList.add(i,  this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY() - 1]);
+                    this.enemyList.get(i).setY(this.enemyList.get(i).getY() - 1);
+                }
+                else if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() - 1] == 3 || this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() - 1] == 1){
+                    continue;
+                }
+            }
+
+            //sopra
+            else if (value < 0.75){
+
+                //se va fuori dal confine
+                if(this.enemyList.get(i).getX() - 1 < 0){
+                    this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
+                    this.lastEnemyPositionList.add(i,  this.grid [this.xSize - 1][this.enemyList.get(i).getY()]);
+                    this.enemyList.get(i).setX(this.xSize - 1);
+                }
+
+                else if (this.grid[this.enemyList.get(i).getX() - 1 ][this.enemyList.get(i).getY()] == 5){
+                    this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] =  this.lastEnemy1Position;
+                    this.enemyList.get(i).setX(this.enemyList.get(i).getX() - 1);
+                    this.status = Status.LOSE;
+                }
+                else if (this.grid[this.enemyList.get(i).getX() - 1][this.enemyList.get(i).getY() ] == 2 || this.grid[this.enemyList.get(i).getX()- 1][this.enemyList.get(i).getY()] == 0){
+                    this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
+                    this.lastEnemyPositionList.add(i,  this.grid [this.enemyList.get(i).getX() - 1][this.enemyList.get(i).getY()]);
+                    this.enemyList.get(i).setX(this.enemyList.get(i).getX() - 1);
+                }
+                else if (this.grid[this.enemyList.get(i).getX() - 1][this.enemyList.get(i).getY()] == 3 || this.grid[this.enemyList.get(i).getX() - 1][this.enemyList.get(i).getY()] == 1){
+                    continue;
+                }
             }
 
 
-
-            this.setEnemyPosition();
-        }
-
-
-
-
-
-        /*
-
-
-        for (Pawn p: this.enemyList) {
-            double value = Math.random();
-            if (value < 0.25){
-                //destra
-                if (this.grid [p.getX()][p.getY() + 1] == 3){
-                    return;
+            //sotto
+            else if (value <= 1){
+                //se va fuori dal confine
+                if(this.enemyList.get(i).getX() + 1 >= this.xSize){
+                    this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
+                    this.lastEnemyPositionList.add(i,  this.grid [0][this.enemyList.get(i).getY()]);
+                    this.enemyList.get(i).setX(0);
                 }
-                if (this.grid [p.getX()][p.getY() + 1] == 5){
+
+                else if (this.grid[this.enemyList.get(i).getX() + 1 ][this.enemyList.get(i).getY()] == 5){
+                    this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] =  this.lastEnemy1Position;
+                    this.enemyList.get(i).setX(this.enemyList.get(i).getX() + 1);
                     this.status = Status.LOSE;
                 }
-                if (this.grid [p.getX()][p.getY() + 1] != 1){
-                    int temporary = this.grid [p.getX()][p.getY() + 1];
-                    this.grid[p.getX()][p.getY() + 1] = 3;
-                    this.grid[p.getX()][p.getY()] = temporary;
-                    p.setY(p.getY() + 1);
+                else if (this.grid[this.enemyList.get(i).getX() + 1][this.enemyList.get(i).getY() ] == 2 || this.grid[this.enemyList.get(i).getX() + 1][this.enemyList.get(i).getY()] == 0){
+                    this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
+                    this.lastEnemyPositionList.add(i,  this.grid [this.enemyList.get(i).getX() + 1][this.enemyList.get(i).getY()]);
+                    this.enemyList.get(i).setX(this.enemyList.get(i).getX() + 1);
                 }
-
-
-            } else
-                if (value < 0.50){
-                   // sopra
-                    if (this.grid[p.getX() - 1][p.getY()] == 3){
-                        return;
-                    }
-                    if (this.grid[p.getX() - 1][p.getY()] == 5){
-                        this.status = Status.LOSE;
-                    }
-                    if (this.grid[p.getX() - 1][p.getY()] != 1){
-                        int temporary = this.grid[p.getX() - 1][p.getY()];
-                        this.grid[p.getX() - 1][p.getY()] = 3;
-                        this.grid[p.getX()][p.getY()] = temporary;
-                        p.setX(p.getX() - 1);
-                    }
-
-                } else
-                    if (value < 0.75){
-                        // giù
-                        if (this.grid [p.getX() + 1][p.getY()] == 3){
-                            return;
-                        }
-                        if (this.grid [p.getX() + 1][p.getY()] == 5){
-                            this.status = Status.LOSE;
-                        }
-                        if (this.grid [p.getX() + 1][p.getY()] != 1){
-                            int temporary = this.grid [p.getX() + 1][p.getY()];
-                            this.grid [p.getX() + 1][p.getY()] = 3;
-                            this.grid[p.getX()][p.getY()] = temporary;
-                            p.setX(p.getX() + 1);
-                        }
-                        //sinistra
-                    } else
-                        if (this.grid[p.getX()] [p.getY() - 1] == 3){
-                            return;
-                        }
-                        if (this.grid[p.getX()] [p.getY() - 1] == 5){
-                            this.status = Status.LOSE;
-                        }
-                        if (this.grid[p.getX()] [p.getY() - 1] != 1){
-                            int temporary = this.grid[p.getX()] [p.getY() - 1];
-                            this.grid[p.getX()] [p.getY() - 1] = 3;
-                            this.grid[p.getX()][p.getY()] = temporary;
-                            p.setY(p.getY() - 1);
-                    }
+                else if (this.grid[this.enemyList.get(i).getX() + 1][this.enemyList.get(i).getY()] == 3 || this.grid[this.enemyList.get(i).getX() + 1][this.enemyList.get(i).getY()] == 1){
+                    continue;
+                }
+            }
             this.setEnemyPosition();
-
         }
-
-         */
-
-
-
-
     }
 
     @Override
