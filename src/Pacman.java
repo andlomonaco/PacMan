@@ -1,7 +1,5 @@
-import java.io.BufferedReader;
-        import java.io.FileNotFoundException;
-        import java.io.FileReader;
-        import java.util.ArrayList;
+import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /*
@@ -69,7 +67,6 @@ public class Pacman extends Thread {
         this.grid [playerPawn.getX()][playerPawn.getY()] = 5;
     }
 
-
     private void initializeEnemy (){
         if (this.levelChoice == 1){
             this.enemyPawn1 = new Pawn(5,11);
@@ -101,23 +98,21 @@ public class Pacman extends Thread {
         this.currentMove = move;
     }
 
-
-
     private void enemyMove (){
 
         for (int i = 0; i < this.enemyList.size(); i ++){
             double value = Math.random();
-            System.out.println(value);
 
             //destra
             if (value < 0.25) {
-                //Se va fuori
+                //Se va fuori dal confine di gioco
                 if(this.enemyList.get(i).getY() + 1 >= this.ySize){
                     this.grid [this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] = this.lastEnemyPositionList.get(i);
                     this.lastEnemyPositionList.add(i,  this.grid [this.enemyList.get(i).getX()][0]);
                     this.enemyList.get(i).setY(0);
                 }
 
+                //se incontra il giocatore
                 else if (this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY() +1] == 5){
                     this.grid[this.enemyList.get(i).getX()][this.enemyList.get(i).getY()] =  this.lastEnemy1Position;
                     this.enemyList.get(i).setY(this.enemyList.get(i).getY() + 1);
@@ -240,12 +235,12 @@ public class Pacman extends Thread {
         this.foodCounter = count;
     }
 
-
-
-
     public void move (){
+
+        //destra
         if (this.currentMove.equalsIgnoreCase("d")){
 
+            //se la pedina va fuori dal confinea
             if (this.playerPawn.getY() + 1 >= this.ySize){
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
                 this.playerPawn.setY(0);
@@ -255,6 +250,7 @@ public class Pacman extends Thread {
                 this.status = Status.LOSE;
             }
             if (this.grid [playerPawn.getX()] [playerPawn.getY() + 1] != 1){
+                //se trova il cibo
                 if (this.grid [playerPawn.getX()] [playerPawn.getY() + 1] == 0){
                     this.foodCounter --;
                     this.score += 10;
@@ -265,6 +261,8 @@ public class Pacman extends Thread {
             }
         }
 
+
+        //sinistra
         if (this.currentMove.equalsIgnoreCase("a")){
             if (this.playerPawn.getY() - 1 < 0){
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
@@ -288,6 +286,8 @@ public class Pacman extends Thread {
             }
         }
 
+
+        //sotto
         if (this.currentMove.equalsIgnoreCase("s")){
             if (this.playerPawn.getX() + 1 >= this.xSize){
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
@@ -307,6 +307,8 @@ public class Pacman extends Thread {
             }
         }
 
+
+        //sopra
         if (this.currentMove.equalsIgnoreCase("w")){
             if (this.playerPawn.getX() - 1 < 0){
                 this.grid [playerPawn.getX()] [playerPawn.getY()] = 2;
@@ -380,24 +382,22 @@ public class Pacman extends Thread {
             result += "|";
             for (int j = 0; j <this.grid[i].length; j ++){
                 if (this.grid [i][j] == 1){
-                    result += "[" + "\u001B[33m\uD83D\uDEA7\u001B[0m" + "]";
+                    result += "[" + "\u001B[33m\uD83D\uDEE2\u001B[0m" + "]";
                 } else if(this.grid [i][j] == 0) {
-                    result += "[" + "\033[0;34m\uD83D\uDC6E\u001B[0m" + "]";
+                    result += "[" + "\033[0;34m\uD83E\uDDC0\u001B[0m" + "]";
                 }else if (this.grid [i][j] == 2){
-                    result += "[" + "\033[0;30m〰\u001B[0m" + "]";
+                    result += "[" + "\033[0;30m\uD83D\uDC3E\u001B[0m" + "]";
                 }else if (this.grid [i][j] == 3 ){
-                    result += "[" + "\u001B[46m\uD83D\uDE93\u001B[0m" + "]";
+                    result += "[" + "\u001B[46m\uD83D\uDE3C\u001B[0m" + "]";
                 }else if (this.grid [i][j] == 5 ){
-                    result += "[" + "\u001B[31m\uD83D\uDEB4\u001B[0m" + "]";
+                    result += "[" + "\u001B[31m\uD83D\uDC2D\u001B[0m" + "]";
                 } else {
                     result += "[" + "\uD83D\uDE94" + "]";
                 }
             }
             result += "\n";
         }
-
         return result;
-
     }
 
 }
